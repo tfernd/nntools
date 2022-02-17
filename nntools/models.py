@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from functools import partial
+
 import torch
 import torch.nn.functional as F
 from torch import Tensor
@@ -42,6 +44,12 @@ class BlockFFTAutoEncoder(pl.LightningModule):
         )
         self.encoder = BlockFFTLayer(**kwargs, is_encoder=True)
         self.decoder = BlockFFTLayer(**kwargs, is_encoder=False)
+
+        self.block_fft = partial(torch.fft.rfftn, dim=(3, 4), norm="ortho")
+        self.block_ifft = partial(torch.fft.irfftn, dim=(3, 4), norm="ortho")
+
+        self.fft = partial(torch.fft.rfftn, dim=(1, 2), norm="ortho")
+        self.ifft = partial(torch.fft.irfftn, dim=(1, 2), norm="ortho")
 
     def forward(self, x: Tensor):
         z = self.encoder.forward(x)
