@@ -8,6 +8,7 @@ import pytorch_lightning as pl
 
 from .layers import BlockFFTLayer
 
+
 class BlockFFTAutoEncoder(pl.LightningModule):
     lr = 1e-3
 
@@ -19,7 +20,7 @@ class BlockFFTAutoEncoder(pl.LightningModule):
         self,
         num_channels: int,
         block_size: int,
-        expand: int | float,
+        expand: float,
         compress: float | int,
         color_mix: bool = True,
         spatial_mix: bool = True,
