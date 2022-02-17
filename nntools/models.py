@@ -1,20 +1,12 @@
 from __future__ import annotations
-from typing import Optional
-
-from functools import partial
-
-import numpy as np
 
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 
 import pytorch_lightning as pl
 
-
 from .layers import BlockFFTLayer
-
 
 class BlockFFTAutoEncoder(pl.LightningModule):
     lr = 1e-3
@@ -51,8 +43,8 @@ class BlockFFTAutoEncoder(pl.LightningModule):
         self.decoder = BlockFFTLayer(**kwargs, is_encoder=False)
 
     def forward(self, x: Tensor):
-        z = self.encoder(x)
-        out = self.decoder(z)
+        z = self.encoder.forward(x)
+        out = self.decoder.forward(z)
 
         return z, out
 

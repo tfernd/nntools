@@ -191,32 +191,32 @@ class BlockFFTLayer(nn.Module):
         x = self.decompress(x)
         x = x.unflatten(3, self.fourier_shape)
 
-        # fourier unmix
-        if self.fourier_unmix is not None:
+        # fourier mix
+        if self.fourier_mix is not None:
             x = x.flatten(3, 5)
-            x = self.fourier_unmix(x)
+            x = self.fourier_mix(x)
             x = x.unflatten(3, self.fourier_shape)
 
         # to real space
         x = torch.complex(*x.chunk(2, dim=-1)).squeeze(3)
         x = self.block_ifft(x)
 
-        # spatial unmix
-        if self.spatial_unmix is not None:
+        # spatial mix
+        if self.spatial_mix is not None:
             x = x.flatten(3, 5)
-            x = self.spatial_unmix(x)
+            x = self.spatial_mix(x)
             x = x.unflatten(3, self.spatial_shape)
 
         # decompose blocks
         x = self.deblockfy(x)
 
-        # color unmix
-        if self.color_unmix is not None:
-            x = self.color_unmix(x)
+        # color mix
+        if self.color_mix is not None:
+            x = self.color_mix(x)
 
         return x.clamp(0, 1)
 
-    def foward(self, x: Tensor):
+    def forward(self, x: Tensor):
         if self.is_encoder:
             return self.encode(x)
         return self.decode(x)
